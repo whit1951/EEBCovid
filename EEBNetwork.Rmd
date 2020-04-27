@@ -17,10 +17,24 @@ library(tidygraph)
 library(tidyverse)
 library(dplyr)
 library(igraph)
+library(ggraph)
 
 EEBdata<-read.csv("EEB-individ-data-cleaned.csv")
 EEBdata$OfficeComb<- with(EEBdata, paste(O.bdg, Office))
 EEBdata$LabComb<- with(EEBdata, paste(L.bdg, Lab))
+
+mycols <- c("Susceptible" = "#2e294e", "Infectious" = "#d00000")
+plot_graph <- function(g, title, outfile=NA) {
+  p <- ggraph(g, layout=igraph::layout_nicely(g)) +
+    geom_edge_link(edge_width=0.5, colour="#635E5B") +
+    geom_node_point(aes(colour=status), size=3) +
+    scale_colour_manual(values=mycols) +
+    ggtitle(title) +
+    theme_graph() +
+    theme(legend.position="none")
+  if (!is.na(outfile)) ggsave(p, filename=outfile, width=6, height=6)
+  return(p)
+}
 ```
 
 ## Office Layer
@@ -48,7 +62,7 @@ Office_uni <- tcrossprod(Office_bi)
 g<-graph_from_adjacency_matrix(Office_uni, mode = "undirected", weighted = NULL, diag = FALSE,  add.colnames = NULL, add.rownames = NA)
 summary(g)
 plot(g, vertex.color="steelblue", vertex.label=NA, main="Office Network")
-
+plot_graph(as_tbl_graph(g) %>% mutate(status = "Susceptible"), "Office Network", "figures/Office_Network.tiff")
 ```
 
 ## Lab Layer
@@ -75,17 +89,16 @@ Lab_uni <- tcrossprod(Lab_bi)
 h<-graph_from_adjacency_matrix(Lab_uni, mode = "undirected", weighted = NULL, diag = FALSE,  add.colnames = NULL, add.rownames = NA)
 summary(h)
 plot(h, vertex.color="steelblue", vertex.label=NA, main="Lab Network")
-
+plot_graph(as_tbl_graph(h) %>% mutate(status = "Susceptible"), "Lab Network", "figures/Lab_Network.tiff")
 ```
 
 ## Combine Layers
 ```{r}
 g<-as_tbl_graph(g)
 h<-as_tbl_graph(h)
-full_graph<-graph_join(g, h, by="name")
+full_graph<-graph_join(g, h, by="name") %>% to_undirected()
 
-full_graph<-full_graph %>% to_undirected() %>% as.igraph()
 plot(full_graph, vertex.color="steelblue", vertex.label=NA, main="Combined Office and Lab Network")
-
+plot_graph(full_graph %>% mutate(status = "Susceptible"), "Combined Office and Lab Network", "figures/Full_Network.tiff")
 ```
 
