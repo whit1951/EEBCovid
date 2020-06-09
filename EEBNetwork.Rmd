@@ -15,7 +15,6 @@ knitr::opts_chunk$set(message = FALSE)
 library(magrittr)
 library(tidygraph)
 library(tidyverse)
-library(dplyr)
 library(igraph)
 library(ggraph)
 

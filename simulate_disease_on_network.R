@@ -22,11 +22,8 @@ run_disease_network_simulation <- function(timesteps, contact_network, model_str
       # identify which links have the potential to produce new infectious individuals
       # i.e. which links connect an infectious individual with a susceptible one?
       # note that if useing a directed graph, only use the first clause of this "or"
-      mutate(pot_inf_link=or(and(.N()[.E()$from, str_c(timestep - 1)] == "I",
-                                 .N()[.E()$to, str_c(timestep - 1)]   == "S"),
-                             and(.N()[.E()$from, str_c(timestep - 1)] == "S",
-                                 .N()[.E()$to, str_c(timestep - 1)]   == "I")) %>%
-               as.integer()) %>%
+      mutate(pot_inf_link=edge_is_between(.N()[str_c(timestep - 1)] == "S",
+                                          .N()[str_c(timestep - 1)] == "I")) %>%
       activate(nodes) %>%
       # see how many potentially infecting connections each individual has
       mutate(number_infectious_neighbors =

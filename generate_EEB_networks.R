@@ -2,8 +2,8 @@ library(tidygraph)
 library(igraph)
 library(Matrix)
 
-generate_EEB_networks <- function() {
-  EEBdata<-read.csv("EEB-individ-data-cleaned.csv")
+generate_EEB_networks <- function(alternative_path="") {
+  EEBdata<-read.csv(paste0(alternative_path, "EEB-individ-data-cleaned.csv"))
   EEBdata$OfficeComb<- with(EEBdata, paste(O.bdg, Office))
   EEBdata$LabComb<- with(EEBdata, paste(L.bdg, Lab))
 

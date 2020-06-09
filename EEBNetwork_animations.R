@@ -12,7 +12,7 @@ library(patchwork)
 source("simulate_disease_on_network.R")
 source("generate_EEB_networks.R")
 
-mycols <- c("Susceptible"="#2e294e", "Infectious"="#d00000")
+mycols <- c("#3b425d","#8c4f47","#455043","#584d61","#60736c")
 time_max <- 150
 
 combine_gifs <- function(plot1, plot2) {
@@ -42,7 +42,7 @@ make_composite_disease_gif <- function(network, title, filename) {
 
   network <- as_tbl_graph(network)
 
-  output <- run_disease_network_simulation(time_max, network, "SI", beta=0.025)
+  output <- run_disease_network_simulation(time_max, network, "SIR", beta=0.025)
 
   tmp <- igraph::layout_nicely(output)
 
@@ -51,12 +51,12 @@ make_composite_disease_gif <- function(network, title, filename) {
     as_tibble() %>%
     pivot_longer(names_to="time", values_to="status", matches("\\d+")) %>%
     mutate(time=as.integer(time),
-           status=factor(status, levels=c("S", "I"), labels=c("Susceptible", "Infectious")))
+           status=factor(status, levels=c("S", "I", "R"), labels=c("Susceptible", "Infectious", "Removed")))
 
   layout_matrix <- tmp[rep(1:nrow(tmp), times=time_max+1), ]
 
   net_plot <- ggraph(tbl_graph(nodes=tidy_output %>% arrange(time),
-                               edges=output %>% activate(edges) %>% as_tibble()),
+                               edges=output %E>% as_tibble()),
                      layout=layout_matrix) +
     geom_edge_link(edge_width=0.66) +
     geom_node_point(aes(colour=status), size=3) +
@@ -67,8 +67,8 @@ make_composite_disease_gif <- function(network, title, filename) {
     theme(legend.position="none")
 
   p <- ggraph(output %>% activate(nodes) %>% rename(status = time_max) %>%
-                mutate(status = factor(status, levels=c("S", "I"),
-                                       labels=c("Susceptible", "Infectious"))),
+                mutate(status = factor(status, levels=c("S", "I", "R"),
+                                       labels=c("Susceptible", "Infectious", "Removed"))),
               layout=tmp) +
     geom_edge_link(edge_width=0.66, colour="#635E5B") +
     geom_node_point(aes(colour=status), size=3) +
