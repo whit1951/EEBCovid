@@ -4,6 +4,7 @@ library(tidyverse)
 
 run_disease_network_simulation <- function(timesteps, contact_network, model_structure,
                                            beta, sigma=0, gamma=0, xi=0) {
+
   # parse model structure
   model_states <- str_split(model_structure, "")[[1]]
   if (head(model_states, 1) == tail(model_states, 1)) model_states %<>% head(-1)
@@ -17,11 +18,11 @@ run_disease_network_simulation <- function(timesteps, contact_network, model_str
 
   # progress through the discrete time epidemic simulation
   for (timestep in 1:timesteps) {
+    if (contact_network %N>% as_tibble() %>% pull() %>% is_in(c("E", "I")) %>% any() %>% not()) break
     contact_network %<>%
       activate(edges) %>%
       # identify which links have the potential to produce new infectious individuals
       # i.e. which links connect an infectious individual with a susceptible one?
-      # note that if useing a directed graph, only use the first clause of this "or"
       mutate(pot_inf_link=edge_is_between(.N()[str_c(timestep - 1)] == "S",
                                           .N()[str_c(timestep - 1)] == "I")) %>%
       activate(nodes) %>%

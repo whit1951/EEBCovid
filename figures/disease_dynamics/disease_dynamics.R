@@ -40,7 +40,7 @@ epidemic_summary <- function(network, num_sims=100, cores=1) {
 EEB_nets <- generate_EEB_networks("../../")
 g<-as_tbl_graph(EEB_nets$office)
 h<-as_tbl_graph(EEB_nets$lab)
-full_graph <- graph_join(g, h, by="name") %>% to_undirected()
+full_graph <- graph_join(g, h, by="name") %>% to_undirected() %>% simplify() %>% as_tbl_graph()
 
 disease_simulations <- bind_rows(epidemic_summary(h, cores=7) %>% mutate(network="Just Shared Lab Space"),
                                  epidemic_summary(full_graph, cores=7) %>% mutate(network="Combined Lab and Office")) %>%

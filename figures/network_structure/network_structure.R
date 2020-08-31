@@ -24,12 +24,12 @@ measure_network_structure <- function(network) {
     rename(component = name)
 }
 
-get_distances <- . %>% distances() %>% .[upper.tri(.)] %>% as.vector() %>% .[is.finite(.)]
+get_distances <- . %>% igraph::distances() %>% .[upper.tri(.)] %>% as.vector() %>% .[is.finite(.)]
 
 EEB_nets <- generate_EEB_networks("../../")
 g<-as_tbl_graph(EEB_nets$office)
 h<-as_tbl_graph(EEB_nets$lab)
-full_graph <- graph_join(g, h, by="name") %>% to_undirected()
+full_graph <- graph_join(g, h, by="name") %>% to_undirected() %>% simplify() %>% as_tbl_graph()
 
 network_structure <- list(measure_network_structure(h) %>% mutate(network = str_c("Just Shared Lab Space (", n(), " components)")),
                           measure_network_structure(full_graph) %>% mutate(network = str_c("Combined Lab and Office (", n(), " components)"))) %>%
