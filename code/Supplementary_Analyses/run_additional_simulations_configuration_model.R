@@ -8,7 +8,7 @@ num_nets <- 200
 num_sims <- 50
 net <- "Lab" # "Combined Office and Lab"
 
-EEB_nets <- generate_EEB_networks()
+EEB_nets <- generate_EEB_networks("../")
 if (net == "Lab") {
   # NB: non-uniform sampling
   networks <- lapply(1:num_nets, function(ii) {

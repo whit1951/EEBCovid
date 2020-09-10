@@ -9,7 +9,7 @@ time_max <- 200
 num_nets <- 200
 num_sims <- 50
 
-EEB_nets <- generate_EEB_networks()
+EEB_nets <- generate_EEB_networks("../")
 
 make_islands_graph <- function(subnet_dist) {
   lapply(1:sum(subnet_dist$n), function(n) {

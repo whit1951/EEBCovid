@@ -9,8 +9,8 @@ library(Matrix)
 library(tools)
 library(patchwork)
 
-source("../../simulate_disease_on_network.R")
-source("../../generate_EEB_networks.R")
+source("../../code/simulate_disease_on_network.R")
+source("../../code/generate_EEB_networks.R")
 
 mycols <- c("Susceptible" = "#2e4052",
             "Exposed"     = "#157a6e",
@@ -97,7 +97,7 @@ make_row <- function(network, title1, subtitle="", title2) {
     plot_layout(widths = c(2, 3))
 }
 
-EEB_nets <- generate_EEB_networks("../../")
+EEB_nets <- generate_EEB_networks("../../code/")
 
 g<-as_tbl_graph(EEB_nets$office)
 h<-as_tbl_graph(EEB_nets$lab)

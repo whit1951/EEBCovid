@@ -5,7 +5,7 @@ library(ggraph)
 library(tidyverse)
 library(parallel)
 
-source("../../generate_EEB_networks.R")
+source("../../code/generate_EEB_networks.R")
 
 mycols <- c("#2e4052", "#d95d39", "#754042")
 theme_set(theme_bw())
@@ -26,7 +26,7 @@ measure_network_structure <- function(network) {
 
 get_distances <- . %>% igraph::distances() %>% .[upper.tri(.)] %>% as.vector() %>% .[is.finite(.)]
 
-EEB_nets <- generate_EEB_networks("../../")
+EEB_nets <- generate_EEB_networks("../../code/")
 g<-as_tbl_graph(EEB_nets$office)
 h<-as_tbl_graph(EEB_nets$lab)
 full_graph <- graph_join(g, h, by="name") %>% to_undirected() %>% simplify() %>% as_tbl_graph()
