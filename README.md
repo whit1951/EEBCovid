@@ -2,7 +2,7 @@
 
 This repository is associated with the publication "Lessons from movement ecology
 for the return to work: modeling contacts and the spread of COVID-19," currently
-[published as a pre-print on medR$\chi$iv](https://www.medrxiv.org/content/10.1101/2020.05.27.20114728v2).
+[published as a pre-print on medRχiv](https://www.medrxiv.org/content/10.1101/2020.05.27.20114728v2).
 
 There are four subdirectories in this repository:
 
